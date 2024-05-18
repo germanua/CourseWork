@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-menu button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 20px;
+            outline: none;
+        }
+
+        .user-menu .logout-menu {
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: #333;
+            border-radius: 4px;
+            padding: 10px;
+            display: none;
+        }
+
+        .user-menu .logout-menu button {
+            display: block;
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            margin: 5px 0;
+            outline: none;
+        }
+
+        .user-menu:hover .logout-menu {
+            display: block;
+        }
+
+        .logout-menu:hover {
+            display: block;
+        }
+
+        .button-bar {
+            background-color: #333;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .button-bar button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 20px;
+            outline: none;
+        }
+
+        .button-bar button.add-new {
+            background-color: #00ceb0;
+            border-radius: 4px;
+            padding: 10px 20px;
+        }
+
+        .button-bar button.search-button {
+            margin-right: 0px;
+            padding: 5px 5px;
+        }
+
+        .button-bar button.report-button {
+            margin-right: 0px;
+            border-radius: 4px;
+            padding: 10px 20px;
+        }
+
+        .button-bar button:hover {
+            background-color: transparent;
+        }
+
+        .placeholder {
+            margin-top: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Additional CSS for product table */
+        .product-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        .product-table th, .product-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .product-table th {
+            background-color: #333;
+            color: white;
+        }
+
+        /* CSS for column names */
+        .column-names {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .column-names th {
+            text-align: left;
+            width: 150px; /* Fixed width for column names table cells */
+        }
+
+        /* CSS for product table */
+        .product-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        .product-table th,
+        .product-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            width: 150px; /* Fixed width for product table cells */
+        }
+
+        /* Search popup */
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .popup-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Inventory Management System</h1>
+    <div class="user-menu" onmouseleave="hideLogoutMenu()">
+        <button class="btn" onclick="toggleLogoutMenu(event)"><i class="fa fa-user"></i></button>
+        <div class="logout-menu" onmouseenter="cancelHideLogoutMenu()" onmouseleave="hideLogoutMenu()">
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let hideLogoutMenuTimeout; // Declare a variable to store timeout
+
+    // Function to toggle logout menu
+    function toggleLogoutMenu(event) {
+        event.stopPropagation(); // Prevent event from bubbling up
+        const logoutMenu = document.querySelector('.logout-menu');
+        logoutMenu.style.display = (logoutMenu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // Function to hide logout menu after a delay
+    function hideLogoutMenu() {
+        hideLogoutMenuTimeout = setTimeout(() => {
+            const logoutMenu = document.querySelector('.logout-menu');
+            logoutMenu.style.display = 'none';
+        }, 500); // Adjust the delay (in milliseconds) as needed
+    }
+
+    // Function to cancel hiding logout menu if mouse re-enters
+    function cancelHideLogoutMenu() {
+        clearTimeout(hideLogoutMenuTimeout); // Cancel the timeout
+    }
+
+    // Function to logout the user
+    function logout() {
+        // Redirect to login page
+        window.location.href = 'login.html';
+    }
+</script>
+
+<div class="button-bar">
+    <button class="btn add-new" onclick="toggleModal('add-product-modal')"><i class="fa fa-plus"></i> Add New</button>
+    <button id="edit-button" class="btn edit" onclick="toggleEditMode()"><i class="fa fa-pencil"></i> Edit</button>
+    <button class="btn filter" onclick="toggleFilterPopup()"><i class="fa fa-filter"></i> Filter</button>
+    <button class="delete-product" onclick="enterDeleteMode()"><i class="fa fa-trash"></i> Delete</button>
+    <button class="btn categories"><i class="fa fa-list"></i> Categories</button>
+    <button class="btn search-button" onclick="toggleSearchPopup('search-popup')"><i class="fa fa-search"></i> Search</button>
+    <a href="http://localhost:8080/downloadCsv" > <button class="btn report-button"><i class="fa fa-file"></i> Report</button></a>
+</div>
+
+<!-- Global script to declare variables -->
+<script>
+    let deleteModeEnabled = false;
+    let editModeEnabled = false;
+</script>
+
+
+<!-- Search Popup Menu -->
+<div id="search-popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="toggleSearchPopup()">&times;</span>
+        <h2>Search Products</h2>
+        <input type="text" id="searchInput" oninput="searchProducts()" placeholder="Search by Product Name">
+        <table id="search-results" class="product-table"></table>
+    </div>
+</div>
+
+<!-- Filter Popup Menu -->
+<div id="filter-popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="toggleFilterPopup()">&times;</span>
+        <h2>Filter Products</h2>
+        <!-- Category filter -->
+        <label for="category-filter">Category:</label>
+        <select id="category-filter">
+            <option value="">All</option>
+            <option value="Phones">Phones</option>
+            <option value="Keyboards">Keyboards</option>
+            <!-- Add more options as needed -->
+        </select>
+        <!-- Type filter -->
+        <label for="type-filter">Type:</label>
+        <select id="type-filter">
+            <option value="">All</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Clothes">Clothes</option>
+            <!-- Add more options as needed -->
+        </select>
+        <!-- Price filter -->
+        <label for="price-filter">Price (max):</label>
+        <input type="number" id="price-filter" min="0" step="0.01">
+        <!-- Color filter -->
+        <label for="color-filter">Color:</label>
+        <input type="text" id="color-filter">
+        <!-- Manufacturer filter -->
+        <label for="manufacturer-filter">Manufacturer:</label>
+        <input type="text" id="manufacturer-filter">
+        <!-- Manufacturer Price filter -->
+        <label for="manufacturer-price-filter">Manufacturer Price (max):</label>
+        <input type="number" id="manufacturer-price-filter" min="0" step="0.01">
+        <!-- Apply button -->
+        <button onclick="applyFilters()">Apply</button>
+    </div>
+</div>
+
+<!-- Category Management Popup -->
+<div id="category-popup" class="popup">
+    <div class="popup-content">
+        <span class="close" onclick="toggleCategoryPopup()">&times;</span>
+        <h2>Manage Categories</h2>
+        <!-- Category tree/hierarchy display -->
+        <div id="category-tree"></div>
+        <!-- Form for adding/editing categories -->
+        <!-- Form for adding/editing categories -->
+        <form id="category-form">
+            <label for="category-name">Category Name:</label>
+            <input type="text" id="category-name" name="category-name">
+            <button type="button" onclick="deleteCategory(document.getElementById('category-name').value)">Delete
+                Category
+            </button>
+        </form>
+
+    </div>
+</div>
+
+
+<h2>Product List</h2>
+
+<!-- Table for column names -->
+<table class="column-names">
+    <tr>
+        <th style="width: 11%;">Photo</th>
+        <th style="width: 11%;">Name</th>
+        <th style="width: 11%;">Price</th>
+        <th style="width: 11%;">Inventory Number</th>
+        <th style="width: 11%;">Category</th>
+        <th style="width: 11%;">Type</th>
+        <th style="width: 11%">Color</th>
+        <th style="width: 11%">Manufacturer Price</th>
+        <th style="width: 11%">Manufacturer</th>
+        <!-- Add more columns as needed -->
+    </tr>
+</table>
+
+<!-- Table for product list -->
+<table id="product-table" class="product-table">
+    <tr>
+        <td class="product-name" data-product-id="${product.id}" onclick="handleProductDeletion(event)">
+            ${product.productName}
+        </td>
+    </tr>
+</table>
+
+
+<!-- The Modal -->
+<div id="add-product-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="toggleModal('add-product-modal')">&times;</span>
+        <h2>Add New Product</h2>
+        <form id="add-product-form" enctype="multipart/form-data">
+            <label for="productName">Name of Product:</label>
+            <input type="text" id="productName" name="productName" required><br>
+            <label for="inventoryNumber">Inventory Number:</label>
+            <input type="text" id="inventoryNumber" name="inventoryNumber" required><br>
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required><br>
+            <label for="type">Type:</label>
+            <input type="text" id="type" name="type" required><br>
+            <label for="color">Color:</label>
+            <input type="text" id="color" name="color" required><br>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" min="0" step="0.01" required><br>
+            <label for="manufacturerPrice">Manufacturer Price:</label>
+            <input type="number" id="manufacturerPrice" name="manufacturerPrice" min="0" step="0.01" required><br>
+            <label for="manufacturer">Manufacturer:</label>
+            <input type="text" id="manufacturer" name="manufacturer" required><br>
+            <label for="photo">Upload Photo:</label>
+            <input type="file" id="photo" name="photo" accept="image/*" style="display: none;"><br>
+            <button type="button" onclick="document.getElementById('photo').click()">Choose Photo</button>
+            <br>
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+
+<!-- File Upload -->
+<script>
+    // Function to handle file upload
+    document.getElementById('photo').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        const formData = new FormData();
+        formData.append('photo', file);
+        formData.append('productName', document.getElementById('productName').value);
+        formData.append('inventoryNumber', document.getElementById('inventoryNumber').value);
+        formData.append('category', document.getElementById('category').value);
+        formData.append('type', document.getElementById('type').value);
+        formData.append('color', document.getElementById('color').value);
+        formData.append('price', document.getElementById('price').value);
+        formData.append('manufacturerPrice', document.getElementById('manufacturerPrice').value);
+        formData.append('manufacturer', document.getElementById('manufacturer').value);
+
+
+        const reader = new FileReader()
+        reader.onload = (event) => {
+            if (!event.target) {
+                return reject(new Error('Failed to load file'))
+            }
+            fetch('http://localhost:8080/addProduct', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    photo: event.target.result,
+                    productName: document.getElementById('productName').value,
+                    inventoryNumber: document.getElementById('inventoryNumber').value,
+                    category: document.getElementById('category').value,
+                    type: document.getElementById('type').value,
+                    color: document.getElementById('color').value,
+                    price: document.getElementById('price').value,
+                    manufacturerPrice: document.getElementById('manufacturerPrice').value,
+                    manufacturer: document.getElementById('manufacturer').value,
+                })
+            })
+                .then(() => {
+                    // Redirect to inventory.html after saving the product
+                    window.location.href = 'inventory.html';
+                })
+        }
+        reader.readAsDataURL(file)
+
+
+    });
+
+</script>
+<!-- Toggles -->
+<script>
+    // Function to toggle modal display
+    function toggleModal(modalId) {
+
+        var modal = document.getElementById(modalId);
+        if (modal.style.display === 'none' || modal.style.display === '') {
+            modal.style.display = 'block';
+            if (modalId === 'edit-product-modal') {
+                populateEditModal(); // Populate edit modal when it's opened
+            }
+        } else {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Function to toggle search popup display
+    function toggleSearchPopup() {
+        var searchPopup = document.getElementById('search-popup');
+        if (searchPopup.style.display === 'none' || searchPopup.style.display === '') {
+            searchPopup.style.display = 'block';
+        } else {
+            searchPopup.style.display = 'none';
+        }
+    }
+
+    // Function to toggle filter popup display
+    function toggleFilterPopup() {
+        var filterPopup = document.getElementById('filter-popup');
+        if (filterPopup.style.display === 'none' || filterPopup.style.display === '') {
+            filterPopup.style.display = 'block';
+        } else {
+            filterPopup.style.display = 'none';
+        }
+    }
+
+    // Function to toggle category popup display
+    function toggleCategoryPopup() {
+        var categoryPopup = document.getElementById('category-popup');
+        if (categoryPopup.style.display === 'none' || categoryPopup.style.display === '') {
+            categoryPopup.style.display = 'block';
+            // Call function to fetch and display categories
+            fetchCategories();
+        } else {
+            categoryPopup.style.display = 'none';
+        }
+    }
+
+    // Add event listener to the Categories button
+    document.querySelector('.categories').addEventListener('click', function () {
+        toggleCategoryPopup();
+    });
+</script>
+
+<!-- Include searchProducts.js -->
+<script src="searchProducts.js"></script>
+
+<!-- Include filter.js -->
+<script src="filter.js"></script>
+
+<!-- Include updateProductTable.js -->
+<script src="updateProductTable.js"></script>
+
+<!-- Include delete.js -->
+<script src="delete.js"></script>
+
+<!-- Include categories.js -->
+<script src="Categories.js"></script>
+
+
+
+
+</body>
+</html>

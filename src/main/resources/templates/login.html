@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            /* Set background image */
+            background: url('/LogBack.jpg') no-repeat center center fixed;
+            /* Ensure the background image covers the entire screen */
+            background-size: cover;
+
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 50%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            background: linear-gradient(to bottom, #03217de0 70%, rgba(3, 33, 125, 0) 100%);
+            color: #ffffffe0;
+            position: relative;
+        }
+        .login-form h2 {
+            text-align: center;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #fff;
+            margin-bottom: 10px; /* Add margin between menu items */
+            padding: 10px; /* Add padding to menu items */
+            text-align: center; /* Center align menu items */
+            border: 1px solid transparent; /* Add a border to separate menu items */
+            transition: background-color 0.3s ease; /* Add transition for hover effect */
+        }
+
+        .menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1); /* Add hover effect */
+            border-color: #fff; /* Change border color on hover */
+        }
+
+        .login-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            height: 420px;
+            margin: 50px auto;
+        }
+
+        .login-form label, .login-form input {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 95%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .login-form button {
+            width: 100%;
+            height: 50px;
+            padding: 10px;
+            color: #fff; /* Changed button text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-size: 17px;
+            font-weight: bold;
+            background: #00ceb0;
+        }
+        .login-form button.signup-button {
+            width: 80px;
+            padding: 10px;
+            color: #353435;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            margin-left: 160px;
+            font-size: 15px;
+            font-weight: bold;
+            background: none;
+        }
+
+
+        .forgot-password {
+            width: 140px;
+            padding: 10px;
+            color: grey;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 13px;
+            font-weight: bold;
+            margin-left: 125px;
+            background: none;
+            text-align: center; /* Center the text */
+            display: block; /* Ensure the button takes full width */
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Inventory System Management</h1>
+</div>
+
+<div class="container">
+    <div class="login-form">
+        <h2>Sign In</h2>
+        <form action="#" method="POST" onsubmit="return login()">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Sign In</button>
+        </form>
+        <button class="signup-button" onclick="signup()">Sign up</button>
+        <span class="forgot-password" onclick="forgotPassword()">Forgot Password</span>
+    </div>
+</div>
+
+<script>
+    function login() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+
+        // Check if username and password match
+        if (username === 'admin' && password === 'admin') {
+            // Redirect to inventory page
+            window.location.href = 'inventory.html';
+            return false; // Prevent form submission
+        } else {
+            alert('Invalid username or password');
+            return false; // Prevent form submission
+        }
+    }
+
+    function signup() {
+        // Your signup logic goes here
+        alert('Redirect to signup page or display signup form');
+    }
+
+    function forgotPassword() {
+        // Your forgot password logic goes here
+        alert('Redirect to forgot password page or display forgot password form');
+    }
+</script>
+
+</body>
+</html>
