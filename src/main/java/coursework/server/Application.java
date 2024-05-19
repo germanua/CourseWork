@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class Application {
-    private final Products products = ProductsStoreSingleton.getInstance();
+    private final Products products = ProductsSingleton.getInstance();
     public final static MediaType TEXT_CSV_TYPE = new MediaType("text", "csv");
 
 

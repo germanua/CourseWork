@@ -1,4 +1,4 @@
-package  nau.coursework4.server;
+package  coursework.server;
 public class ProductBuilder {
     private String id;
     private String productName;

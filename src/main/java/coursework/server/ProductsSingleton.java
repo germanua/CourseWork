@@ -1,8 +1,8 @@
-package nau.coursework4.server;
+package coursework.server;
 
-public class ProductsStoreSingleton {
+public class ProductsSingleton {
     private static Products instance;
-    private ProductsStoreSingleton(){
+    private ProductsSingleton(){
 
     }
     public static Products getInstance(){

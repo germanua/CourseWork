@@ -1,4 +1,4 @@
-package nau.coursework4.server;
+package coursework.server;
 
 import com.google.gson.annotations.SerializedName;
 

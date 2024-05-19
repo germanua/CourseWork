@@ -1,4 +1,4 @@
-package nau.coursework4.server;
+package coursework.server;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
